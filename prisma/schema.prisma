@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProgrammingLanguages {
+  CPP     @map("cpp")
+  JAVA    @map("java")
+  PYTHON3 @map("python3")
+  NODEJS  @map("nodejs")
+  C       @map("c")
+  @@map("programming_languages")
+}
+
+
+enum SubmissionStatus {
+  CREATED                  @map("created")
+  QUEUED_FOR_EXECUTION     @map("queued_for_execution")
+  EXECUTING                @map("executing")
+  SOMETHING_WENT_WRONG     @map("something_went_wrong")
+  TASK_COMPLETED           @map("task_completed")
+  @@map("submission_status")
+}
+
+enum ExecutionStatus {
+  MEMORY_LIMIT_EXCEEDED  @map("memory_limit_exceeded")
+  RUNTIME_ERROR          @map("runtime_error")
+  SUCCESSFUL_EXECUTION   @map("successful_execution")
+  UNKNOWN_STATUS         @map("unknown_status")
+  @@map("execution_status")
+}
+
+model ExecutionSubmissions {
+  submission_id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  programming_language   ProgrammingLanguages
+  submission_status      SubmissionStatus  @default(CREATED)
+  typed_code             String
+  data_input             String[]
+  compilation_error      String?
+  execution_status       ExecutionStatus[]
+  execution_output       String[]
+  date_created           DateTime    @default(now())
+  date_modified          DateTime    @updatedAt
+  metadata               String?
+  @@map("execution_submissions")
+}
