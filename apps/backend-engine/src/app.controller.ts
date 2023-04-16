@@ -9,7 +9,7 @@ export class AppController {
               private readonly rmqService: RmqService) {}
 
   @MessagePattern('submission_created')
-  async handleOrderCreated(@Payload() data: string, @Ctx() context: RmqContext) {
+  async handleSubmissionCreated(@Payload() data: string, @Ctx() context: RmqContext) {
     await this.appService.executeSubmission(data);
     this.rmqService.ack(context);
   }

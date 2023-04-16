@@ -22,7 +22,7 @@ export class ExecuteService {
         submission_status : true, 
       }
     })
-    this.executionClient.emit('submission_created', execute.submission_id)
+    this.executionClient.emit('submission_created', execute.submission_id);
     return execute;
   }
 }

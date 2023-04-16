@@ -33,6 +33,7 @@ enum ExecutionStatus {
   MEMORY_LIMIT_EXCEEDED  @map("memory_limit_exceeded")
   RUNTIME_ERROR          @map("runtime_error")
   SUCCESSFUL_EXECUTION   @map("successful_execution")
+  TIME_LIMIT_EXCEEDED    @map("time_limit_exceeded")
   UNKNOWN_STATUS         @map("unknown_status")
   @@map("execution_status")
 }
