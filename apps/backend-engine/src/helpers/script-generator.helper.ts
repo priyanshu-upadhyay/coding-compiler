@@ -1,12 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-enum SupportedLanguages {
-  PYTHON3 = 'python3',
-  CPP = 'cpp',
-  JAVA = 'java',
-  CLANG = 'clang',
-}
+import { ProgrammingLanguages } from '@prisma/client';
 
 interface Compilation {
   [key: string]: {
@@ -26,58 +19,76 @@ interface FileExtension {
   };
 }
 
-@Injectable()
-export class ProgrammingLanguageUtils {
-  private readonly programmingLanguage: string;
+interface ImageName {
+  [key: string]: {
+    type: string;
+  };
+}
+
+
+export class ScriptGenerator {
+  private readonly programmingLanguage: ProgrammingLanguages;
   private readonly configService : ConfigService;
 
   // Compilation and Execution
   private readonly compilation: Compilation = {
-    cpp: {
+    CPP: {
       command: "g++ main.cpp -o exec",
     },
-    java: {
+    JAVA: {
       command: "javac main.java",
     },
-    clang: {
+    C: {
       command: "gcc -Werror main.c -o exec",
-    },
-    python3: {
-      command: "python3 main.py",
-    },
+    }
   };
 
   private readonly execution: Execution = {
-    cpp: {
+    CPP: {
       command: "./exec",
     },
-    java: {
+    JAVA: {
       command: "java main",
     },
-    clang: {
+    C: {
       command: "./exec",
     },
-    python3: {
+    PYTHON3: {
       command: "python3 main.py",
     },
   };
 
   public readonly fileExtension: FileExtension = {
-    cpp: {
+    CPP: {
       type: ".cpp",
     },
-    java: {
+    JAVA: {
       type: ".java",
     },
-    clang: {
+    C: {
       type: ".c",
     },
-    python3: {
+    PYTHON3: {
       type: ".py",
     },
   };
 
-  constructor(programmingLanguage: string) {
+  public readonly imageName: ImageName = {
+    CPP: {
+      type: "cpp",
+    },
+    JAVA: {
+      type: "java",
+    },
+    C: {
+      type: "clang",
+    },
+    PYTHON3: {
+      type: "python3",
+    },
+  };
+
+  constructor(programmingLanguage: ProgrammingLanguages) {
     this.programmingLanguage = programmingLanguage;
     this.configService = new ConfigService;
   }
@@ -104,6 +115,10 @@ export class ProgrammingLanguageUtils {
 
   public getFileExtension(): string {
     return this.fileExtension[this.programmingLanguage].type;
+  }
+
+  public getDockerImageName(): string {
+    return this.imageName[this.programmingLanguage].type;
   }
 
   public getEndpointFileContent() : string      // File that will execute inside container

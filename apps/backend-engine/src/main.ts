@@ -5,7 +5,7 @@ import { RmqService } from '@app/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const rmqService = app.get<RmqService>(RmqService);
-  app.connectMicroservice(rmqService.getOptions('CODE_EXECUTION'));
+  app.connectMicroservice(rmqService.getOptions('CODE_EXECUTION'), {inheritAppConfig: true});
   await app.startAllMicroservices();
 }
 bootstrap();

@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExecuteController } from './execute.controller';
 import { ExecuteService } from './execute.service';
-import { RmqModule } from '@app/common';
-import { EXECUTION_SERVICE } from './constants/service';
-
+import { RmqModule, EXECUTION_SERVICE } from '@app/common';
 
 @Module({
   imports : [ RmqModule.register({

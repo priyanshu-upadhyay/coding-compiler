@@ -9,8 +9,8 @@ const exec = promisify(execCallback);
 @Injectable()
 export class DockerService {
   private readonly docker: Dockerode;
-  private readonly dockerSimple;
-
+  private readonly dockerSimple: { getContainer: (arg0: string) => any; };
+  
   constructor() {
     this.docker = new Dockerode();
     this.dockerSimple = new DockerodeSimple();

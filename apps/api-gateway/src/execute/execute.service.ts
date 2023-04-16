@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ExecuteRequest } from './types';
-import { DatabaseService } from '@app/common';
+import { DatabaseService, EXECUTION_SERVICE } from '@app/common';
 import { toPrismaProgrammingLanguage } from './utils';
-import { EXECUTION_SERVICE } from './constants/service';
-
 
 @Injectable()
 export class ExecuteService {
@@ -19,12 +17,12 @@ export class ExecuteService {
         data_input : request.input,
         programming_language : toPrismaProgrammingLanguage(request.programming_language)
       },
-      // select: {
-      //   submission_id : true,
-      //   submission_status : true,
-      // }
+      select: {
+        submission_id : true,
+        submission_status : true, 
+      }
     })
-    this.executionClient.emit('submission_created', execute)
+    this.executionClient.emit('submission_created', execute.submission_id)
     return execute;
   }
 }
