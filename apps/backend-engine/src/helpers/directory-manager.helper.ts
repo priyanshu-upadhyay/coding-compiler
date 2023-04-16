@@ -21,10 +21,11 @@ export class DirectoryManager {
 
   createSubmissionFolder(submissionFolderName ?: string) : string {
     const folderName  : string = submissionFolderName ?? uuidv4();
-    const folderPath = path.join(this.baseDirPath, `${folderName}/GLACompilerFiles`);
+    const folderPath = path.join(this.baseDirPath, `${folderName}/GLACompiler`);
+    const resultFolderPath = path.join(this.baseDirPath, `${folderName}/GLACompiler/result`);
     if(!existsSync(folderPath))
     {
-      mkdirSync(folderPath, { recursive: true });
+      mkdirSync(resultFolderPath, { recursive: true });
     }
     this.executionfolderPath = folderPath;
     console.log("Submission folder is created");

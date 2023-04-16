@@ -41,7 +41,8 @@ export class DockerService {
 
   async removeContainer(containerId: string): Promise<void> {
     const container = this.docker.getContainer(containerId);
-    await container.remove();
+    await container.remove({ force: true });
+    console.log("Container has been successfully deleted")
   }
 
   async copyToContainer(containerId: string, source: string, destination: string): Promise<void> {
@@ -50,7 +51,7 @@ export class DockerService {
   }
   
   async copyFromContainer(containerId: string, source: string, destination: string): Promise<void> {
-    const command = `docker cp ${containerId}:${destination} ${source}`;
+    const command = `docker cp ${containerId}:${source} ${destination}`;
     await exec(command);
   }
 
