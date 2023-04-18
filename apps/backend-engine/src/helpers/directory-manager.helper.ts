@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { existsSync, mkdirSync, writeFile, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, rmSync} from 'fs';
 const path = require('path');
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DirectoryManager {
-  private executionfolderPath : string;
-  private baseDirPath : string;
+  private submissionfolderPath : string;
+  private tempFolderPath : string;
 
   constructor()
   {
@@ -15,34 +15,41 @@ export class DirectoryManager {
     {
       mkdirSync(folderPath, { recursive: true });
     }
-    this.baseDirPath = folderPath;
+    this.tempFolderPath = folderPath;
     console.log("Temp Folder is Created");
   }
 
-  createSubmissionFolder(submissionFolderName ?: string) : string {
+  getAndCreateFoldersForExecution(submissionFolderName ?: string) : {basePath : string, submissionPath : string, resultPath : string} {
     const folderName  : string = submissionFolderName ?? uuidv4();
-    const folderPath = path.join(this.baseDirPath, `${folderName}/GLACompiler`);
-    const resultFolderPath = path.join(this.baseDirPath, `${folderName}/GLACompiler/result`);
-    if(!existsSync(folderPath))
+    const basePath = path.join(this.tempFolderPath, folderName);
+    const submissionPath = path.join(this.tempFolderPath, `${folderName}/GLACompiler`);
+    const resultPath = path.join(this.tempFolderPath, `${folderName}/GLACompiler/result`);
+    if(!existsSync(submissionPath))
     {
-      mkdirSync(resultFolderPath, { recursive: true });
+      mkdirSync(resultPath, { recursive: true });
     }
-    this.executionfolderPath = folderPath;
+    this.submissionfolderPath = submissionPath;
     console.log("Submission folder is created");
-    return folderPath;
+    return {basePath, submissionPath, resultPath};
   }
   
   writeTestCases(fileContents: string[]) {
     for (let i = 0; i < fileContents.length; i++) {
-      const filePath = `${this.executionfolderPath}/testcase${i+1}.in`;
+      const filePath = `${this.submissionfolderPath}/testcase${i+1}.in`;
       writeFileSync(filePath, fileContents[i]);
     }
     console.log("Test Cases are Written");
   }
 
   writeFileWithName(fileContent: string, fileName : string) {
-    const filePath = `${this.executionfolderPath}/${fileName}`;
+    const filePath = `${this.submissionfolderPath}/${fileName}`;
     writeFileSync(filePath, fileContent);
     console.log(`File has been written : ${fileName}`);
+  }
+
+  deleteFolder(path : string)
+  {
+    rmSync(path, { recursive: true, force: true });
+    console.log(`Folder has been deleted : ${path}`)
   }
 }

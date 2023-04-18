@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ExecuteRequest } from './types';
 import { DatabaseService, EXECUTION_SERVICE } from '@app/common';
-import { toPrismaProgrammingLanguage } from './utils';
+import { handleEmptyInputArray } from './utils';
 
 @Injectable()
 export class ExecuteService {
@@ -11,11 +11,12 @@ export class ExecuteService {
   ) {}
   
   async executor(request : ExecuteRequest) {
+    const inputArray = handleEmptyInputArray(request.input_array);
     const execute = await this.db.executionSubmissions.create({
       data: {
-        typed_code: request.typed_code,
-        data_input : request.input,
-        programming_language : toPrismaProgrammingLanguage(request.programming_language)
+        source_code  : request.source_code,
+        input_array  : inputArray,
+        programming_language : request.programming_language
       },
       select: {
         submission_id : true,

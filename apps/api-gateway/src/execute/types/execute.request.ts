@@ -1,14 +1,7 @@
-import { IsString, IsEnum, Length, IsArray, ArrayMinSize, ValidateNested, ArrayMaxSize} from 'class-validator';
+import { IsString, IsEnum, Length, IsArray, ArrayMinSize, ArrayMaxSize} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-
-enum ProgrammingLanguages {
-  CPP     = 'cpp',
-  JAVA    = 'java',
-  PYTHON3 = 'python3',
-  NODEJS  = 'nodejs',
-  C       = 'c',
-}
+import { ProgrammingLanguages } from '@prisma/client';
 
 export class ExecuteRequest {
   @ApiProperty({
@@ -23,14 +16,14 @@ export class ExecuteRequest {
   })
   @IsString()
   @Length(0, 1000000)
-  typed_code: string;
+  source_code: string;
 
   @ApiProperty({
-    description: 'Array of `BASE64` encoded user input for the source code',
+    description: 'Array of `BASE64` encoded input array of testcases for the source code',
   })
   @IsArray()
   @ArrayMinSize(0)
-  @ArrayMaxSize(25)
+  @ArrayMaxSize(50)
   @Type(() => String)
-  input: string[];
+  input_array: string[];
 }

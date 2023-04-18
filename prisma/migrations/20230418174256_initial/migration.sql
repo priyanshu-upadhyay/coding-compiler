@@ -2,18 +2,18 @@
 CREATE TYPE "programming_languages" AS ENUM ('cpp', 'java', 'python3', 'nodejs', 'c');
 
 -- CreateEnum
-CREATE TYPE "submission_status" AS ENUM ('created', 'queued_for_execution', 'executing', 'something_went_wrong', 'task_completed');
+CREATE TYPE "submission_status" AS ENUM ('created', 'executing', 'task_completed', 'something_went_wrong');
 
 -- CreateEnum
-CREATE TYPE "execution_status" AS ENUM ('memory_limit_exceeded', 'runtime_error', 'successful_execution', 'unknown_status');
+CREATE TYPE "execution_status" AS ENUM ('memory_limit_exceeded', 'runtime_error', 'successful_execution', 'time_limit_exceeded', 'output_limit_reached', 'unknown_execution_error');
 
 -- CreateTable
 CREATE TABLE "execution_submissions" (
     "submission_id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "programming_language" "programming_languages" NOT NULL,
     "submission_status" "submission_status" NOT NULL DEFAULT 'created',
-    "typed_code" TEXT NOT NULL,
-    "data_input" TEXT[],
+    "source_code" TEXT NOT NULL,
+    "input_array" TEXT[],
     "compilation_error" TEXT,
     "execution_status" "execution_status"[],
     "execution_output" TEXT[],

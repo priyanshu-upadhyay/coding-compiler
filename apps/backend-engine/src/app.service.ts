@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@app/common';
 import { ExecutionSubmissions, SubmissionStatus } from '@prisma/client';
 import { DirectoryManager, DockerService, ScriptGenerator } from './helpers';
-import { decodeBase64ArrayOfStrings, decodeBase64String, getSuccessExecutionStatus } from './functions';
+import { decodeBase64ArrayOfStrings, decodeBase64String, encodeBase64OutputFiles, encodeFileBase64String, getSuccessExecutionStatus } from './functions';
 import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AppService {
@@ -13,26 +13,29 @@ export class AppService {
   async executeSubmission(submissionId : string) {
     let execute : ExecutionSubmissions = await this.db.executionSubmissions.findUniqueOrThrow({ where: { submission_id: submissionId } });
     const programmingLanguageScript = new ScriptGenerator(execute.programming_language)
-    const submissionFolder = this.dirService.createSubmissionFolder();
+    const {basePath, submissionPath, resultPath} = this.dirService.getAndCreateFoldersForExecution();
     const codeFileExtension = programmingLanguageScript.getFileExtension();
 
-    this.dirService.writeTestCases(decodeBase64ArrayOfStrings(execute.data_input)); 
-    this.dirService.writeFileWithName(decodeBase64String(execute.typed_code), `main${codeFileExtension}`);
+    this.dirService.writeTestCases(decodeBase64ArrayOfStrings(execute.input_array)); 
+    this.dirService.writeFileWithName(decodeBase64String(execute.source_code), `main${codeFileExtension}`);
     this.dirService.writeFileWithName(programmingLanguageScript.getEndpointFileContent(), "inside.sh");
 
     const containerName : string = `GLACompiler-${execute.submission_id}-${uuidv4()}`
     const containerObj = await this.dockerService.createContainer(programmingLanguageScript.getDockerImageName(), containerName);
     const containerId = containerObj.id;
     await this.dockerService.startContainer(containerId);
-    await this.dockerService.copyToContainer(containerId, submissionFolder, "/");
+    await this.dockerService.copyToContainer(containerId, submissionPath, "/");
     // Taken for Execution
     await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.EXECUTING }});
-    const output = await this.dockerService.execInContainer(containerId, ['/bin/sh', '-c', `cd GLACompiler && bash inside.sh ${execute.data_input.length}`]);
-    console.log(output);
-    await this.dockerService.copyFromContainer(containerId, "/GLACompiler/result", submissionFolder);
+    const output = await this.dockerService.execInContainer(containerId, ['/bin/sh', '-c', `cd GLACompiler && bash inside.sh ${execute.input_array.length}`]);
+    await this.dockerService.copyFromContainer(containerId, "/GLACompiler/result", submissionPath);
     await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.TASK_COMPLETED }});
+    
+    // let result = await getSuccessExecutionStatus(resultPath);
+    let result = await encodeFileBase64String(resultPath, "compilation_error.out");
+    console.log(result, output);
+    // let resultOutput = await encodeBase64OutputFiles(resultPath);
     await this.dockerService.removeContainer(containerId);
-    let result = await getSuccessExecutionStatus(submissionFolder);
-    console.log(result);
+    this.dirService.deleteFolder(basePath);
   }
 }

@@ -5,7 +5,7 @@ import { ExecutionStatus } from '@prisma/client';
 
 async function getSuccessExecutionStatus(filePath: string): Promise<ExecutionStatus[]> {
   const status: ExecutionStatus[] = [];
-    const fileStream = fs.createReadStream(`${filePath}/result/status.out`);
+    const fileStream = fs.createReadStream(`${filePath}/status.out`);
     const rl = readline.createInterface({
       input: fileStream,
       crlfDelay: Infinity,
@@ -32,15 +32,14 @@ async function getSuccessExecutionStatus(filePath: string): Promise<ExecutionSta
         }
         else if(code == "4")
         {
-          status.push(ExecutionStatus.UNKNOWN_STATUS);
+          status.push(ExecutionStatus.OUTPUT_LIMIT_REACHED);
         }
         else
         {
-          throw new Error(`Unkonow error status : ${code} while reading status.out`)
+          status.push(ExecutionStatus.UNKNOWN_EXECUTION_ERROR);
         }
       }
     }
-
     return status;
 }
 

@@ -14,7 +14,6 @@ enum ProgrammingLanguages {
   CPP     @map("cpp")
   JAVA    @map("java")
   PYTHON3 @map("python3")
-  NODEJS  @map("nodejs")
   C       @map("c")
   @@map("programming_languages")
 }
@@ -22,19 +21,19 @@ enum ProgrammingLanguages {
 
 enum SubmissionStatus {
   CREATED                  @map("created")
-  QUEUED_FOR_EXECUTION     @map("queued_for_execution")
   EXECUTING                @map("executing")
-  SOMETHING_WENT_WRONG     @map("something_went_wrong")
   TASK_COMPLETED           @map("task_completed")
+  SOMETHING_WENT_WRONG     @map("something_went_wrong")
   @@map("submission_status")
 }
 
 enum ExecutionStatus {
-  MEMORY_LIMIT_EXCEEDED  @map("memory_limit_exceeded")
-  RUNTIME_ERROR          @map("runtime_error")
-  SUCCESSFUL_EXECUTION   @map("successful_execution")
-  TIME_LIMIT_EXCEEDED    @map("time_limit_exceeded")
-  UNKNOWN_STATUS         @map("unknown_status")
+  MEMORY_LIMIT_EXCEEDED   @map("memory_limit_exceeded")
+  RUNTIME_ERROR           @map("runtime_error")
+  SUCCESSFUL_EXECUTION    @map("successful_execution")
+  TIME_LIMIT_EXCEEDED     @map("time_limit_exceeded")
+  OUTPUT_LIMIT_REACHED    @map("output_limit_reached")
+  UNKNOWN_EXECUTION_ERROR @map("unknown_execution_error")
   @@map("execution_status")
 }
 
@@ -42,8 +41,8 @@ model ExecutionSubmissions {
   submission_id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   programming_language   ProgrammingLanguages
   submission_status      SubmissionStatus  @default(CREATED)
-  typed_code             String
-  data_input             String[]
+  source_code            String
+  input_array            String[]
   compilation_error      String?
   execution_status       ExecutionStatus[]
   execution_output       String[]
