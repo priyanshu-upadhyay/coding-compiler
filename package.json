@@ -27,15 +27,19 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^4.12.0",
+    "@types/winston": "^2.4.4",
     "amqp-connection-manager": "^4.1.12",
     "amqplib": "^0.10.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dockerode": "^3.3.5",
     "joi": "^17.9.1",
+    "nest-winston": "^1.9.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "simple-dockerode": "^0.2.2"
+    "simple-dockerode": "^0.2.2",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

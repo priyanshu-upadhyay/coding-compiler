@@ -16,7 +16,7 @@ import * as Joi from 'joi';
     }),
     ExecuteModule,
     CheckStatusModule,
-    DatabaseModule,
+    DatabaseModule
   ],
 })
 export class AppModule {}
