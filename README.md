@@ -1,73 +1,139 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# GLAOnlineCompiler - API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Introduction
+This API allows you to submit and execute programming code in multiple languages. It provides features like submission_id generation, programming language selection, submission status tracking, and execution output.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Base URL / IP
+172.\_.\_._ (GLA University IP Address)
 
-## Description
+## API Endpoints
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Submit Code for Execution
 
-## Installation
+Submits the source code for execution and returns the submission id.
 
-```bash
-$ yarn install
+```http
+POST /submit
 ```
 
-## Running the app
+#### Request Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| programming_language | enum | The programming language used in the code. Currently, supported programming languages are `CPP`, `JAVA`, `PYTHON3`, and `C`. |
+| source_code | string | The source code to be executed encoded in base64. |
+| input_array | array of strings | An array of inputs encoded in base64. |
 
-```bash
-# development
-$ yarn run start
+##### Sample Request
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```http
+curl --location '{base_url}/submit' \
+--header 'Content-Type: application/json' \
+--data '{
+"programming_language" : "PYTHON3",
+"source_code" : "cHJpbnQoIkhlbGxvIFdvcmxkIik=",
+"input_array" : ["MSAyCjQzCjM0NDMKMzQzNDMKMzQ0Mw==", "MQo0MwozNDQz"]
+}'
 ```
 
-## Test
+#### Response
+The API returns the following parameters in JSON format:
 
-```bash
-# unit tests
-$ yarn run test
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| submission_id | string | A unique identifier for the submission. |
+| programming_language | enum | The programming language used in the code. |
+| submission_status | enum | The current status of the submission. Possible values are `CREATED`, `IN_PROCESS`, `SUCCESS`, `RETRY`, and `FAILURE`. |
+| `date_created` | `string` (ISO 8601 format) | The date and time the submission was created. |
+| `date_modified` | `string` (ISO 8601 format) | The date and time the submission was last modified. |
 
-# e2e tests
-$ yarn run test:e2e
+##### Sample Response
 
-# test coverage
-$ yarn run test:cov
+```
+{
+    "submission_id": "56197eb3-706b-43e9-8827-2ca823c43ac7",
+    "programming_language": "PYTHON3",
+    "submission_status": "CREATED",
+    "date_created": "2023-04-19T20:08:57.603Z",
+    "date_modified": "2023-04-19T20:08:57.603Z",
+}
 ```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Get Status for Submission
 
-## Stay in touch
+Return the status of the submission id.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```http
+GET /status/<submission_id>
+```
 
-## License
+#### Request Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| submission_id | string | A unique identifier for the submission. |
 
-Nest is [MIT licensed](LICENSE).
+##### Sample Request
+
+```
+curl --location '{base-url}/status/56197eb3-706b-43e9-8827-2ca823c43ac7'
+```
+
+#### Response
+The API returns the following parameters in JSON format:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| submission_id | string | A unique identifier for the submission. |
+| programming_language | enum | The programming language used in the code. |
+| submission_status | enum | The current status of the submission. Possible values are `CREATED`, `IN_PROCESS`, `SUCCESS`, `RETRY`, and `FAILURE`. |
+| source_code | string | The source code to be executed. |
+| input_array | array of strings | The input values provided for the code to be executed. |
+| compilation_error | string or null | The error generated during compilation, if any. |
+| execution_status | array of enum | The status of each execution. Possible values are `MEMORY_LIMIT_EXCEEDED`, `RUNTIME_ERROR`, `SUCCESSFUL_EXECUTION`, `TIME_LIMIT_EXCEEDED`, `OUTPUT_LIMIT_EXCEEDED`, `UNKNOWN_EXECUTION_ERROR`. <br /> <br /> This will be an empty array if the program has not started running yet or having compilation error.
+| execution_output | string array (base64-encoded) | The output of the program, if it has started running. This will be an empty array if the program has not started running yet or having compilation error. |
+| date_created | `string` (ISO 8601 format) | The date and time the submission was created. |
+| date_modified | `string` (ISO 8601 format) | The date and time the submission was last modified. |
+| metadata | string | Any additional metadata associated with the submission. (Eg. Error Payload genrated by compiler backend engine) |
+
+##### Sample Response
+
+```
+{
+    "submission_id": "56197eb3-706b-43e9-8827-2ca823c43ac7",
+    "programming_language": "PYTHON3",
+    "submission_status": "SUCCESS",
+    "source_code" : "cHJpbnQoIkhlbGxvIFdvcmxkIik=",
+    "input_array" : ["MSAyCjQzCjM0NDMKMzQzNDMKMzQ0Mw==", "MQo0MwozNDQz"]
+    "compilation_error": null,
+    "execution_status": ["SUCCESSFUL_EXECUTION", "SUCCESSFUL_EXECUTION"],
+    "execution_output": ["SGVsbG8gV29ybGQ=", "SGVsbG8gV29ybGQ="],
+    "date_created": "2023-04-19T20:08:57.603Z",
+    "date_modified": "2023-04-19T20:08:57.603Z",
+    "metadata": null
+}
+```
+
+---
+### Enums for Status Mapping
+
+#### SubmissionStatus
+
+The `submission_status` field can be one of the following:
+
+- `CREATED`
+- `IN_PROCESS`
+- `SUCCESS`
+- `RETRY`
+- `FAILURE`
+
+#### ExecutionStatus
+
+The `execution_status` field is an array of strings representing the current execution status of the program. It can contain one or more of the following:
+
+- `MEMORY_LIMIT_EXCEEDED`
+- `RUNTIME_ERROR`
+- `SUCCESSFUL_EXECUTION`
+- `TIME_LIMIT_EXCEEDED`
+- `OUTPUT_LIMIT_EXCEEDED`
+- `UNKNOWN_EXECUTION_ERROR`
