@@ -20,10 +20,11 @@ enum ProgrammingLanguages {
 
 
 enum SubmissionStatus {
-  CREATED                  @map("created")
-  EXECUTING                @map("executing")
-  TASK_COMPLETED           @map("task_completed")
-  SOMETHING_WENT_WRONG     @map("something_went_wrong")
+  CREATED    @map("created")
+  IN_PROCESS @map("in_process")
+  SUCCESS    @map("success")
+  RETRY      @map("retry")
+  FAILURE    @map("failure")
   @@map("submission_status")
 }
 
@@ -32,7 +33,7 @@ enum ExecutionStatus {
   RUNTIME_ERROR           @map("runtime_error")
   SUCCESSFUL_EXECUTION    @map("successful_execution")
   TIME_LIMIT_EXCEEDED     @map("time_limit_exceeded")
-  OUTPUT_LIMIT_REACHED    @map("output_limit_reached")
+  OUTPUT_LIMIT_EXCEEDED   @map("output_limit_exceeded")
   UNKNOWN_EXECUTION_ERROR @map("unknown_execution_error")
   @@map("execution_status")
 }

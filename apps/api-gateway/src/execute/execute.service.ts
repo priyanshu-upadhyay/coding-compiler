@@ -17,10 +17,6 @@ export class ExecuteService {
         source_code  : request.source_code,
         input_array  : inputArray,
         programming_language : request.programming_language
-      },
-      select: {
-        submission_id : true,
-        submission_status : true, 
       }
     })
     this.executionClient.emit('submission_created', execute.submission_id);

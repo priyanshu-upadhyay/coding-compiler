@@ -6,7 +6,7 @@ import { DatabaseModule, DatabaseService, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { DirectoryManager, DockerService } from './helpers';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionsFilter } from './errors';
+import { GlobalExceptionsFilter } from './exceptions';
 
 @Module({
   imports: 

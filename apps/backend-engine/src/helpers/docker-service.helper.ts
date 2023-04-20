@@ -24,6 +24,10 @@ export class DockerService {
       HostConfig: {
         Memory: 200 * 1024 * 1024, // Memory limit to 200 MB
       },
+      StorageOpt: {
+        Size: '100M' // 100 MB of Storage
+      },
+      NetworkDisabled : true
     };
     const container = await this.docker.createContainer(defaultConfig);
     return container;

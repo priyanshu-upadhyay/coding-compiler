@@ -26,15 +26,15 @@ export class AppService {
     await this.dockerService.startContainer(containerId);
     await this.dockerService.copyToContainer(containerId, submissionPath, "/");
     // Taken for Execution
-    await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.EXECUTING }});
+    await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.IN_PROCESS }});
     const output = await this.dockerService.execInContainer(containerId, ['/bin/sh', '-c', `cd GLACompiler && bash inside.sh ${execute.input_array.length}`]);
     await this.dockerService.copyFromContainer(containerId, "/GLACompiler/result", submissionPath);
-    await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.TASK_COMPLETED }});
-    
-    // let result = await getSuccessExecutionStatus(resultPath);
-    let result = await encodeFileBase64String(resultPath, "compilation_error.out");
-    console.log(result, output);
-    // let resultOutput = await encodeBase64OutputFiles(resultPath);
+    let result = await getSuccessExecutionStatus(resultPath);
+    // let result = await encodeFileBase64String(resultPath, "compilation_error.out");
+    console.log(output, result);
+    let resultOutput = await encodeBase64OutputFiles(resultPath);
+    console.log(resultOutput);
+    await this.db.executionSubmissions.update({ where: { submission_id: submissionId }, data: { submission_status: SubmissionStatus.SUCCESS, execution_output: resultOutput, execution_status : result }});
     await this.dockerService.removeContainer(containerId);
     this.dirService.deleteFolder(basePath);
   }

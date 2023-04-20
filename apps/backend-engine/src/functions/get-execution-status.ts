@@ -32,7 +32,7 @@ async function getSuccessExecutionStatus(filePath: string): Promise<ExecutionSta
         }
         else if(code == "4")
         {
-          status.push(ExecutionStatus.OUTPUT_LIMIT_REACHED);
+          status.push(ExecutionStatus.OUTPUT_LIMIT_EXCEEDED);
         }
         else
         {

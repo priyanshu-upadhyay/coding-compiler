@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ExecuteService } from './execute.service';
 import { ExecuteRequest } from './types';
 
-@Controller('execute')
+@Controller('submit')
 export class ExecuteController {
   constructor(private readonly ExecuteService: ExecuteService) {}
   

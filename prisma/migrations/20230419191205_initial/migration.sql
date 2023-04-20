@@ -1,11 +1,11 @@
 -- CreateEnum
-CREATE TYPE "programming_languages" AS ENUM ('cpp', 'java', 'python3', 'nodejs', 'c');
+CREATE TYPE "programming_languages" AS ENUM ('cpp', 'java', 'python3', 'c');
 
 -- CreateEnum
-CREATE TYPE "submission_status" AS ENUM ('created', 'executing', 'task_completed', 'something_went_wrong');
+CREATE TYPE "submission_status" AS ENUM ('created', 'in_process', 'success', 'retry', 'failure');
 
 -- CreateEnum
-CREATE TYPE "execution_status" AS ENUM ('memory_limit_exceeded', 'runtime_error', 'successful_execution', 'time_limit_exceeded', 'output_limit_reached', 'unknown_execution_error');
+CREATE TYPE "execution_status" AS ENUM ('memory_limit_exceeded', 'runtime_error', 'successful_execution', 'time_limit_exceeded', 'output_limit_exceeded', 'unknown_execution_error');
 
 -- CreateTable
 CREATE TABLE "execution_submissions" (
