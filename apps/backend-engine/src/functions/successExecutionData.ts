@@ -1,6 +1,7 @@
 import * as readline from 'readline';
 import * as fs from 'fs';
 import { ExecutionStatus } from '@prisma/client';
+import * as moment from 'moment';
 
 
 async function getSuccessExecutionStatus(filePath: string): Promise<ExecutionStatus[]> {
@@ -43,5 +44,30 @@ async function getSuccessExecutionStatus(filePath: string): Promise<ExecutionSta
     return status;
 }
 
-export {getSuccessExecutionStatus};
-// 0 -> SUCCESSFUL_EXECUTION 1 -> RUNTIME_ERROR 2 -> MEMORY_LIMIT_EXCEEDED 3 -> TIME_LIMIT_EXCEEDED 4 -> UNKONOWN_ERROR
+async function getSuccessExecutionTime(filePath: string): Promise<string[]> {
+  const executionTime : string[] = [];
+    const fileStream = fs.createReadStream(`${filePath}/execution_time.out`);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    });
+
+    for await (const line of rl) {
+      if (line.startsWith('real')) {
+        const timeString = line.split('\t')[1];
+        const [wholeSecondsString, fractionSecondsString] = timeString.split('.');
+        const wholeSeconds = wholeSecondsString ? parseInt(wholeSecondsString) : 0;
+        const fractionSeconds = parseFloat(`0.${fractionSecondsString}`);
+        const totalSeconds  = wholeSeconds + fractionSeconds;
+        executionTime.push(`${totalSeconds}s`);
+      }
+    }
+    return executionTime;
+}
+
+export {getSuccessExecutionStatus, getSuccessExecutionTime};
+
+
+
+
+

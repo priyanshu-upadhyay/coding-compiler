@@ -18,6 +18,13 @@ export class ExecuteService {
         source_code  : request.source_code,
         input_array  : inputArray,
         programming_language : request.programming_language
+      },
+      select : {
+        submission_id : true,
+        programming_language : true,
+        submission_status : true,
+        date_created : true,
+        date_modified : true
       }
     });
     this.logger.info("Execution Data", execute);

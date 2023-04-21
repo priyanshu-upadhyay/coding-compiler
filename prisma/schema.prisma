@@ -47,6 +47,7 @@ model ExecutionSubmissions {
   compilation_error      String?
   execution_status       ExecutionStatus[]
   execution_output       String[]
+  execution_time         String[]
   date_created           DateTime    @default(now())
   date_modified          DateTime    @updatedAt
   metadata               String?

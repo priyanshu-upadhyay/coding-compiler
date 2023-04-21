@@ -3,7 +3,7 @@ import {
   Injectable,
   OnModuleInit,
   INestApplication,
-  Logger,
+  Logger
 } from "@nestjs/common";
 import { Prisma, PrismaClient } from "@prisma/client";
 
@@ -39,7 +39,7 @@ export class DatabaseService
       this.logger.warn(event);
     });
     this.$on("info", (event) => {
-      this.logger.log(event);
+      this.logger.log( event);
     });
     this.$on("query", (event) => {
       this.logger.log(event);

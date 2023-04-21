@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '@app/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {logger : new LoggerService().createLogger()} );
+  const app = await NestFactory.create(AppModule, {logger : new LoggerService().createLogger("api-gateway")} );
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

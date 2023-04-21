@@ -5,7 +5,7 @@ import 'winston-daily-rotate-file';
 
 @Injectable()
 export class LoggerService {
-  createLogger() {
+  createLogger(appName) {
     return WinstonModule.createLogger({
       transports: [
         new transports.DailyRotateFile({
@@ -31,18 +31,16 @@ export class LoggerService {
 
         new transports.Console({
           format: format.combine(
-            // format.cli(),
-            // format.splat(),
             format.timestamp({
               format: () => {
                 return new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
               },
             }),
             format.printf((info) => {
-              // return `${info.timestamp} ${info.level} : ${info.message}`;
-              return `{${info.timestamp}, ${JSON.stringify(info)}}`
+              return `${info.timestamp}, ${info.level}, ${info.message},  ${info.context}`;
+              // return `${JSON.stringify(info)}`
             }),
-            nestWinstonModuleUtilities.format.nestLike('Compiler', {
+            nestWinstonModuleUtilities.format.nestLike(appName, {
               colors: true,
               // prettyPrint: true
             }),
@@ -59,23 +57,23 @@ export class AppLogger extends Logger {
     super(context);
   }
 
-  info(message: string, value : any) {
-    super.log({"message" : message, value : value});
+  info(tag: string, message : any) {
+    super.log({message : message, tag : tag});
   }
 
-  error(message: string, value : any) {
-    super.error({"message" : message, value : value});
+  error(tag: string, message : any) {
+    super.error({message : message, tag : tag});
   }
 
-  warn(message: string, value : any) {
-    super.warn({"message" : message, value : value});
+  warn(tag: string , message : any) {
+    super.warn({message : message, tag : tag});
   }
 
-  debug(message: string, value : any) {
-    super.debug({"message" : message, value : value});
+  debug(tag: string, message : any) {
+    super.debug({message : message, tag : tag});
   }
 
-  verbose(message: string, value : any) {
-    super.verbose({"message" : message, value : value});
+  verbose(tag: string, message : any) {
+    super.verbose({message : message, tag : tag});
   }
 }
