@@ -14,7 +14,7 @@ export class RmqService {
         queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
         noAck,
         persistent: true,
-        prefetchCount: 500,
+        prefetchCount: (this.configService.get<number>("RABBIT_MQ_PREFETCH") || 200),
       },
     };
   }

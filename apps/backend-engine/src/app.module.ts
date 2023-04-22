@@ -17,6 +17,7 @@ import { Logger } from 'winston';
       validationSchema: Joi.object({
         RABBIT_MQ_URI:  Joi.string().required(),
         RABBIT_MQ_CODE_EXECUTION_QUEUE: Joi.string().required(),
+        RABBIT_MQ_PREFETCH: Joi.number().required(),
       }),
       envFilePath: '.env',
     }),

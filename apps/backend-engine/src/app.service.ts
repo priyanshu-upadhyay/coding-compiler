@@ -66,5 +66,6 @@ export class AppService {
     }
     await this.dockerService.removeContainer(containerId);
     this.dirService.deleteFolder(basePath);
+    this.logger.info("TASK FINISHED", {submissionId : execute.submission_id});
   }
 }
