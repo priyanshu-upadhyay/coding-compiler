@@ -6,7 +6,6 @@ type LanguageUtils = {
     compilation : string | null;
     execution   : string;
     extension   : string;
-    dockerImage : string;
   };
 };
 
@@ -19,31 +18,26 @@ export class ScriptGenerator {
     this.configService = new ConfigService;
   }
 
-  // Compilation and Execution
   private readonly languageUtils: LanguageUtils = {
     CPP : {
       compilation : "g++ main.cpp -o exec",
       execution   : "./exec",
       extension   : ".cpp",
-      dockerImage : "cpp",
     },
     JAVA: {
       compilation : "javac main.java",
       execution   : "java main",
       extension   : ".java",
-      dockerImage : "java"
     },
     C: {
       compilation : "gcc -Werror main.c -o exec",
       execution   : "./exec",
       extension   : ".c",
-      dockerImage : "clang"
     },
     PYTHON3: {
       compilation : null,
       execution   : "python3 main.py",
       extension   : ".py",
-      dockerImage : "python3"
     }
   };
 
@@ -78,20 +72,68 @@ export class ScriptGenerator {
   }
 
   public getDockerImageName(): string {
-    return this.languageUtils[this.programmingLanguage].dockerImage;
+    const imageNameFromConfig = this.configService.get<string>(`${this.programmingLanguage}_IMAGE_NAME`)
+    switch(this.programmingLanguage)
+    {
+      case 'CPP':
+        return imageNameFromConfig || "cpp";
+      case 'JAVA':
+        return imageNameFromConfig || "java";
+      case 'PYTHON3':
+        return imageNameFromConfig || "python3";
+      case 'C':
+        return imageNameFromConfig || "clang";
+    }
   }
 
-  public getEndpointFileContent() : string      // File that will execute inside container
-  {
+  // public getEndpointFileContent() : string      
+  // {
+  //   let content: string = "#!/usr/bin/env bash\n";
+
+  //   if(this.isCompilationSupportedLanguage()){
+  //     content += `${this.getCompilationCommand()} 2> result/compilation_error.out\nret=$?\nif [ $ret -ne 0 ]\nthen\n  exit 2\nfi`
+  //   }
+
+  //   content += `\n\nn=$1     #Number of Testcases\n\nfor i in $(seq 1 $n)\ndo\n    ulimit -s ${this.getStackMemoryLimit()} -f ${this.getOutputFileSizeLimit()}\n    (time timeout ${this.getTimeLimit()} ${this.getExecutionCommand()} < testcase\${i}.in &> result/output\${i}.out) &>> result/execution_time.out                 # &> is used to standard output and standard error output\n    ret=$?\n    if [ $ret -eq 0 ]; then\n      echo 0 >> result/status.out\n    elif [ $ret -eq 1 ]; then\n      echo 1 >> result/status.out\n    elif [ $ret -eq 139 ]; then\n      rm result/output\${i}.out\n      echo 2 >> result/status.out\n    elif [ $ret -eq 124 ]; then\n      rm result/output\${i}.out\n      echo 3 >> result/status.out\n    elif [ $ret -eq 153 -o $ret -eq 120 ]; then\n      rm result/output\${i}.out\n      echo 4 >> result/status.out\n    else\n      echo 5 >> result/status.out\n  fi\ndone`
+  //   return content;
+  // }
+
+  public getEndpointFileContent(): string {
     let content: string = "#!/usr/bin/env bash\n";
-
-    if(this.isCompilationSupportedLanguage()){
-      content += `${this.getCompilationCommand()} 2> result/compilation_error.out\nret=$?\nif [ $ret -ne 0 ]\nthen\n  exit 2\nfi`
+    if (this.isCompilationSupportedLanguage()) {
+      content += `${this.getCompilationCommand()} 2> result/compilation_error.out\n` +
+        `ret=$?\nif [ $ret -ne 0 ]\nthen\n  exit 2\nfi\n\n`;
     }
-
-    content += `\n\nn=$1     #Number of Testcases\n\nfor i in $(seq 1 $n)\ndo\n    ulimit -s ${this.getStackMemoryLimit()} -f ${this.getOutputFileSizeLimit()}\n    (time timeout ${this.getTimeLimit()} ${this.getExecutionCommand()} < testcase\${i}.in &> result/output\${i}.out) &>> result/execution_time.out                 # &> is used to standard output and standard error output\n    ret=$?\n    if [ $ret -eq 0 ]; then\n      echo 0 >> result/status.out\n    elif [ $ret -eq 1 ]; then\n      echo 1 >> result/status.out\n    elif [ $ret -eq 139 ]; then\n      rm result/output\${i}.out\n      echo 2 >> result/status.out\n    elif [ $ret -eq 124 ]; then\n      rm result/output\${i}.out\n      echo 3 >> result/status.out\n    elif [ $ret -eq 153 -o $ret -eq 120 ]; then\n      rm result/output\${i}.out\n      echo 4 >> result/status.out\n    else\n      echo 5 >> result/status.out\n  fi\ndone`
+    content += `n=$1     # Number of test cases\n` +
+      `for i in $(seq 1 $n)\n` +
+      `do\n` +
+      `    # Set resource limits for the program\n` +
+      `    ulimit -s ${this.getStackMemoryLimit()} -f ${this.getOutputFileSizeLimit()}\n` +
+      `    # Run the program with a timeout and redirect the output to a file\n` +
+      `    (time timeout ${this.getTimeLimit()} ${this.getExecutionCommand()} < testcase\${i}.in &> result/output\${i}.out) &>> result/execution_time.out\n` +
+      `    ret=$?\n` +
+      `    if [ $ret -eq 0 ]; then\n` +
+      `      echo 0 >> result/status.out\n` +
+      `    elif [ $ret -eq 1 ]; then\n` +
+      `      echo 1 >> result/status.out\n` +
+      `    elif [ $ret -eq 139 ]; then\n` +
+      `      rm result/output\${i}.out\n` +
+      `      echo 2 >> result/status.out\n` +
+      `    elif [ $ret -eq 124 ]; then\n` +
+      `      rm result/output\${i}.out\n` +
+      `      echo 3 >> result/status.out\n` +
+      `    elif [ $ret -eq 153 -o $ret -eq 120 ]; then\n` +
+      `      rm result/output\${i}.out\n` +
+      `      echo 4 >> result/status.out\n` +
+      `    else\n` +
+      `      rm result/output\${i}.out\n` +
+      `      echo 5 >> result/status.out\n` +
+      `    fi\n` +
+      `done\n`;
+  
     return content;
   }
+
 }
 
 // 0 -> SUCCESSFUL_EXECUTION 1 -> RUNTIME_ERROR 2 -> MEMORY_LIMIT_EXCEEDED 3 -> TIME_LIMIT_EXCEEDED 4 -> OUTPUT_LIMIT_REACHED 5 -> UNKNOWN_EXECUTION_ERROR

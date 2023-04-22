@@ -27,8 +27,8 @@ export class ExecuteService {
         date_modified : true
       }
     });
-    this.logger.info("Execution Data", execute);
     this.executionClient.emit('submission_created', execute.submission_id);
+    this.logger.info("Event triggered for backend-engine", {submission_id: execute.submission_id})
     return execute;
   }
 }

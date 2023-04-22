@@ -9,9 +9,8 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class DatabaseService
-  extends PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel >
-  implements OnModuleInit
-{
+  extends PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel>
+  implements OnModuleInit {
   private readonly logger = new Logger(DatabaseService.name);
 
   constructor(config: ConfigService) {
@@ -19,8 +18,8 @@ export class DatabaseService
       log: [
         { emit: "event", level: "query" },
         { emit: "event", level: "error" },
-        { emit: "event", level: "info" },
-        { emit: "event", level: "warn" }
+        { emit: "event", level: "info"  },
+        { emit: "event", level: "warn"  }
       ],
       datasources: {
         db: {
@@ -39,7 +38,7 @@ export class DatabaseService
       this.logger.warn(event);
     });
     this.$on("info", (event) => {
-      this.logger.log( event);
+      this.logger.log(event);
     });
     this.$on("query", (event) => {
       this.logger.log(event);

@@ -15,8 +15,8 @@ export class LoggerService {
             return `{${info.timestamp}, ${JSON.stringify(info)}}`;
           })),
           datePattern: 'YYYY-MM-DD',
-          zippedArchive: false, 
-          maxFiles: '10d', // will keep log until they are older than 10 days
+          zippedArchive: true, 
+          maxFiles: '20d', // will keep log until they are older than 10 days
         }),
 
         new transports.DailyRotateFile({
@@ -25,8 +25,8 @@ export class LoggerService {
             return `{${info.timestamp}, ${JSON.stringify(info)}}`;
           })),
           datePattern: 'YYYY-MM-DD',
-          zippedArchive: false,
-          maxFiles: '10d'
+          zippedArchive: true,
+          maxFiles: '20d'
         }),
 
         new transports.Console({
@@ -37,9 +37,10 @@ export class LoggerService {
               },
             }),
             format.printf((info) => {
-              return `${info.timestamp}, ${info.level}, ${info.message},  ${info.context}`;
+              return `${info.timestamp}, ${info.level}, ${info.message}, ${info.context}`;
               // return `${JSON.stringify(info)}`
             }),
+            // Optional for Good Looking
             nestWinstonModuleUtilities.format.nestLike(appName, {
               colors: true,
               // prettyPrint: true
@@ -57,23 +58,23 @@ export class AppLogger extends Logger {
     super(context);
   }
 
-  info(tag: string, message : any) {
+  info(tag: string, message ?: any) {
     super.log({message : message, tag : tag});
   }
 
-  error(tag: string, message : any) {
+  error(tag: string, message ?: any) {
     super.error({message : message, tag : tag});
   }
 
-  warn(tag: string , message : any) {
+  warn(tag: string , message ?: any) {
     super.warn({message : message, tag : tag});
   }
 
-  debug(tag: string, message : any) {
+  debug(tag: string, message ?: any) {
     super.debug({message : message, tag : tag});
   }
 
-  verbose(tag: string, message : any) {
+  verbose(tag: string, message ?: any) {
     super.verbose({message : message, tag : tag});
   }
 }

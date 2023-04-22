@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule, DatabaseService, RmqModule } from '@app/common';
+import { AppLogger, DatabaseModule, DatabaseService, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { DirectoryManager, DockerService } from './helpers';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionsFilter } from './exceptions';
+import { Logger } from 'winston';
 
 @Module({
   imports: 
@@ -22,9 +23,7 @@ import { GlobalExceptionsFilter } from './exceptions';
     RmqModule,
     DatabaseModule
   ],
-  
   controllers: [AppController],
-
   providers: 
   [
     AppService, 

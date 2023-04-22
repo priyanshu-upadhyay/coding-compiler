@@ -16,7 +16,7 @@ export class DockerService {
     this.dockerSimple = new DockerodeSimple();
   }
 
-  async createContainer(image: string, name: string): Promise<Dockerode.Container> {
+  async createContainer(image: string, name: string, workingDir : string): Promise<string> {
     const defaultConfig : Dockerode.ContainerCreateOptions = {
       Image: image,
       name,
@@ -27,10 +27,11 @@ export class DockerService {
       StorageOpt: {
         Size: '100M' // 100 MB of Storage
       },
-      NetworkDisabled : true
+      NetworkDisabled : true,
+      WorkingDir : workingDir
     };
     const container = await this.docker.createContainer(defaultConfig);
-    return container;
+    return container.id;
   }
 
   async startContainer(containerId: string): Promise<void> {
@@ -46,7 +47,6 @@ export class DockerService {
   async removeContainer(containerId: string): Promise<void> {
     const container = this.docker.getContainer(containerId);
     await container.remove({ force: true });
-    console.log("Container has been successfully deleted")
   }
 
   async copyToContainer(containerId: string, source: string, destination: string): Promise<void> {

@@ -4,11 +4,11 @@ import { ExecuteRequest } from './types';
 
 @Controller('submit')
 export class ExecuteController {
-  constructor(private readonly ExecuteService: ExecuteService) {}
+  constructor(private readonly executeService: ExecuteService) {}
   
   @Post()
   @HttpCode(201)
   executor(@Body() request: ExecuteRequest) {
-    return this.ExecuteService.executor(request);
+    return this.executeService.executor(request);
   }
 }
