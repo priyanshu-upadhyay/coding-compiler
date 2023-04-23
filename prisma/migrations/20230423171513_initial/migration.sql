@@ -2,7 +2,7 @@
 CREATE TYPE "programming_languages" AS ENUM ('cpp', 'java', 'python3', 'c');
 
 -- CreateEnum
-CREATE TYPE "submission_status" AS ENUM ('created', 'in_process', 'success', 'retry', 'failure');
+CREATE TYPE "submission_status" AS ENUM ('created', 'in_process', 'success', 'failure');
 
 -- CreateEnum
 CREATE TYPE "execution_status" AS ENUM ('memory_limit_exceeded', 'runtime_error', 'successful_execution', 'time_limit_exceeded', 'output_limit_exceeded', 'unknown_execution_error');
@@ -17,6 +17,7 @@ CREATE TABLE "execution_submissions" (
     "compilation_error" TEXT,
     "execution_status" "execution_status"[],
     "execution_output" TEXT[],
+    "execution_time" TEXT[],
     "date_created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "date_modified" TIMESTAMP(3) NOT NULL,
     "metadata" TEXT,

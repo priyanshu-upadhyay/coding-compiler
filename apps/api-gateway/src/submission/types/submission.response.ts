@@ -1,6 +1,6 @@
-import { ExecutionStatus, ProgrammingLanguages, SubmissionStatus } from "@prisma/client";
+import { ProgrammingLanguages, SubmissionStatus } from "@prisma/client";
 
-export interface ExecuteResponse {
+export interface SubmissionResponse {
   submission_id: String;
   programming_language: ProgrammingLanguages;
   submission_status: SubmissionStatus;

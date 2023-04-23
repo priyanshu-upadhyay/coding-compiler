@@ -8,8 +8,8 @@ import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
-export class AppService {
-  private readonly logger = new AppLogger(AppService.name);
+export class BackendEngineService {
+  private readonly logger = new AppLogger(BackendEngineService.name);
   constructor(private readonly db: DatabaseService,
     private readonly dirService: DirectoryManager,
     private readonly dockerService: DockerService,
@@ -22,12 +22,12 @@ export class AppService {
       { where: { submission_id: submissionId } }
     );
     const languageScript = new ScriptGenerator(execute.programming_language);
-    await this.db.executionSubmissions.update
-    (
-      { where: { submission_id: submissionId }
-      , data: { submission_status: SubmissionStatus.IN_PROCESS }
-      , select: { submission_id: true } }
-    );
+    execute = await this.db.executionSubmissions.update
+              (
+                { where: { submission_id: submissionId }
+                , data: { submission_status: SubmissionStatus.IN_PROCESS}
+                }
+              );
     await this.cacheManager.set(execute.submission_id, execute);
     const { basePath, submissionPath, resultPath } = this.dirService.getAndCreateFoldersForExecution();
     this.dirService.writeTestCases(decodeBase64ArrayOfStrings(execute.input_array));
@@ -48,7 +48,7 @@ export class AppService {
       execute = await this.db.executionSubmissions.update
                 (
                   { where : { submission_id: submissionId }
-                  , data  : { submission_status: SubmissionStatus.SUCCESS, compilation_error : compilationError }
+                  , data  : { submission_status: SubmissionStatus.SUCCESS, compilation_error : compilationError}
                   }
                 );
     }

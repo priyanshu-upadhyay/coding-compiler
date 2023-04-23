@@ -45,15 +45,6 @@
       "compilerOptions": {
         "tsConfigPath": "apps/cron-scheduler/tsconfig.app.json"
       }
-    },
-    "retry-submission": {
-      "type": "application",
-      "root": "apps/retry-submission",
-      "entryFile": "main",
-      "sourceRoot": "apps/retry-submission/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/retry-submission/tsconfig.app.json"
-      }
     }
   }
 }

@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { BackendEngineController } from './backend-engine.controller';
+import { BackendEngineService } from './backend-engine.service';
 import { ConfigModule } from '@nestjs/config';
-import { AppLogger, DatabaseModule, DatabaseService, RedisModule, RmqModule } from '@app/common';
+import { DatabaseModule, DatabaseService, RedisModule, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { DirectoryManager, DockerService } from './helpers';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionsFilter } from './exceptions';
-import { Logger } from 'winston';
 
 @Module({
   imports: 
@@ -27,14 +26,14 @@ import { Logger } from 'winston';
     DatabaseModule,
     RedisModule.register()
   ],
-  controllers: [AppController],
+  controllers: [BackendEngineController],
   providers: 
   [
-    AppService, 
+    BackendEngineService, 
     DatabaseService, 
     DockerService,
     DirectoryManager,
     { provide: APP_FILTER, useClass: GlobalExceptionsFilter}
   ]
 })
-export class AppModule {}
+export class BackendEngineModule {}

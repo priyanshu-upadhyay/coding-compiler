@@ -23,7 +23,6 @@ enum SubmissionStatus {
   CREATED    @map("created")
   IN_PROCESS @map("in_process")
   SUCCESS    @map("success")
-  RETRY      @map("retry")
   FAILURE    @map("failure")
   @@map("submission_status")
 }

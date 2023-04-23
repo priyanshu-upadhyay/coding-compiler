@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProgrammingLanguages } from '@prisma/client';
 
-export class ExecuteRequest {
+export class SubmissionRequest {
   @ApiProperty({
     enum: ProgrammingLanguages,
     description: 'The programming language of the source code',

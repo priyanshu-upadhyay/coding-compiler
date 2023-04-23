@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { CheckStatusService } from './check-status.service';
+import { CheckStatusService } from './status.service';
 
 @Controller('status')
 export class CheckStatusController {

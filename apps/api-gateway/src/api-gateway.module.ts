@@ -1,10 +1,10 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ExecuteModule } from './execute/execute.module';
-import { CheckStatusModule } from './check-status/check-status.module';
+import { SubmissionModule } from './submission/submission.module';
+import { CheckStatusModule } from './status/status.module';
 import { DatabaseModule, RedisModule } from '@app/common';
 import * as Joi from 'joi';
-import { RequestMiddleware } from './app.middleware';
+import { RequestMiddleware } from './api-gateway.middleware';
 
 @Module({
   providers: [RequestMiddleware],
@@ -18,13 +18,13 @@ import { RequestMiddleware } from './app.middleware';
       }),
       envFilePath: '.env',
     }),
-    ExecuteModule,
+    SubmissionModule,
     CheckStatusModule,
     DatabaseModule,
     RedisModule.register()
   ],
 })
-export class AppModule {
+export class ApiGatewayModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestMiddleware).forRoutes('*');
   }
