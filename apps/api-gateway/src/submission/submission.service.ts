@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { SubmissionRequest, SubmissionResponse } from './types';
-import { DatabaseService, EXECUTION_SERVICE, AppLogger, EMIT_SUBMISSION, QueueSubmissionPayload } from '@app/common';
+import { DatabaseService, EXECUTION_SERVICE, AppLogger, EMIT_SUBMISSION } from '@app/common';
 import { handleEmptyInputArray, makeSubmitReponse } from './utils';
 import { ExecutionSubmissions } from '@prisma/client';
 import { Cache } from 'cache-manager';
