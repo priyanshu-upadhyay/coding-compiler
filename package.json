@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "echo Waiting for DB, Redis, and RabbitMQ... && wait-on tcp:localhost:5672 tcp:localhost:6379 tcp:localhost:5672 && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod:backend-engine": "node dist/apps/backend-engine/main",
     "start:prod": "node dist/apps/api-gateway/main",
@@ -45,6 +45,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "simple-dockerode": "^0.2.2",
+    "wait-on": "^7.0.1",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1"
   },
