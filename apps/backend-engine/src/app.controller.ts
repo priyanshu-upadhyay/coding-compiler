@@ -13,5 +13,4 @@ export class AppController {
     await this.appService.executeSubmission(data);
     this.rmqService.ack(context);
   }
-
 }

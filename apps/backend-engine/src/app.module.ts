@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { AppLogger, DatabaseModule, DatabaseService, RmqModule } from '@app/common';
+import { AppLogger, DatabaseModule, DatabaseService, RedisModule, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { DirectoryManager, DockerService } from './helpers';
 import { APP_FILTER } from '@nestjs/core';
@@ -18,11 +18,14 @@ import { Logger } from 'winston';
         RABBIT_MQ_URI:  Joi.string().required(),
         RABBIT_MQ_CODE_EXECUTION_QUEUE: Joi.string().required(),
         RABBIT_MQ_PREFETCH: Joi.number().required(),
+        REDIS_URL: Joi.string().required(),
+        REDIS_TTL: Joi.number().required(),
       }),
       envFilePath: '.env',
     }),
     RmqModule,
-    DatabaseModule
+    DatabaseModule,
+    RedisModule.register()
   ],
   controllers: [AppController],
   providers: 

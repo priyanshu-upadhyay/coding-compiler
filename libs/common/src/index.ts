@@ -5,3 +5,4 @@ export * from './rmq/rmq.module';
 export * from './constants';
 export * from './logger/logger.module';
 export * from './logger/logger.service';
+export * from './redis/redis.module';
