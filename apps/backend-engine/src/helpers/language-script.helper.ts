@@ -85,19 +85,7 @@ export class ScriptGenerator {
         return imageNameFromConfig || "clang";
     }
   }
-
-  // public getEndpointFileContent() : string      
-  // {
-  //   let content: string = "#!/usr/bin/env bash\n";
-
-  //   if(this.isCompilationSupportedLanguage()){
-  //     content += `${this.getCompilationCommand()} 2> result/compilation_error.out\nret=$?\nif [ $ret -ne 0 ]\nthen\n  exit 2\nfi`
-  //   }
-
-  //   content += `\n\nn=$1     #Number of Testcases\n\nfor i in $(seq 1 $n)\ndo\n    ulimit -s ${this.getStackMemoryLimit()} -f ${this.getOutputFileSizeLimit()}\n    (time timeout ${this.getTimeLimit()} ${this.getExecutionCommand()} < testcase\${i}.in &> result/output\${i}.out) &>> result/execution_time.out                 # &> is used to standard output and standard error output\n    ret=$?\n    if [ $ret -eq 0 ]; then\n      echo 0 >> result/status.out\n    elif [ $ret -eq 1 ]; then\n      echo 1 >> result/status.out\n    elif [ $ret -eq 139 ]; then\n      rm result/output\${i}.out\n      echo 2 >> result/status.out\n    elif [ $ret -eq 124 ]; then\n      rm result/output\${i}.out\n      echo 3 >> result/status.out\n    elif [ $ret -eq 153 -o $ret -eq 120 ]; then\n      rm result/output\${i}.out\n      echo 4 >> result/status.out\n    else\n      echo 5 >> result/status.out\n  fi\ndone`
-  //   return content;
-  // }
-
+  
   public getEndpointFileContent(): string {
     let content: string = "#!/usr/bin/env bash\n";
     if (this.isCompilationSupportedLanguage()) {

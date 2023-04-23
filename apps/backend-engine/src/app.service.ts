@@ -64,8 +64,12 @@ export class AppService {
         , select : { submission_id : true } }
       );
     }
-    await this.dockerService.removeContainer(containerId);
-    this.dirService.deleteFolder(basePath);
-    this.logger.info("TASK FINISHED", {submissionId : execute.submission_id});
+    try {
+      await this.dockerService.removeContainer(containerId);
+      this.dirService.deleteFolder(basePath);
+    } catch (error) {
+      this.logger.error(`Fail to clean the data for ${execute.submission_id}`, error);
+    }
+    this.logger.info("TASK COMPLETED FOR ${execute.submission_id}");
   }
 }

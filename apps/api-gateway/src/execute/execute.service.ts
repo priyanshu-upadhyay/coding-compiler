@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ExecuteRequest } from './types';
-import { DatabaseService, EXECUTION_SERVICE, AppLogger } from '@app/common';
+import { DatabaseService, EXECUTION_SERVICE, AppLogger, EMIT_SUBMISSION } from '@app/common';
 import { handleEmptyInputArray } from './utils';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class ExecuteService {
         date_modified : true
       }
     });
-    this.executionClient.emit('submission_created', execute.submission_id);
+    this.executionClient.emit(EMIT_SUBMISSION, execute.submission_id);
     this.logger.info("Event triggered for backend-engine", {submission_id: execute.submission_id})
     return execute;
   }
