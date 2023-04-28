@@ -5,7 +5,7 @@ module.exports = {
     {
       name: 'compiler-api-gateway',
       script: 'dist/apps/api-gateway/main.js',
-      instances: 2,
+      instances: 1,
       exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',

@@ -16,7 +16,7 @@ import { GlobalExceptionsFilter } from './exceptions';
       validationSchema: Joi.object({
         RABBIT_MQ_URI:  Joi.string().required(),
         RABBIT_MQ_CODE_EXECUTION_QUEUE: Joi.string().required(),
-        RABBIT_MQ_PREFETCH: Joi.number().required(),
+        RABBIT_MQ_PREFETCH: Joi.number(),   // Not making it mandatory, if not passed then based on ram we can calculate
         REDIS_URL: Joi.string().required(),
         REDIS_TTL: Joi.number().required(),
       }),

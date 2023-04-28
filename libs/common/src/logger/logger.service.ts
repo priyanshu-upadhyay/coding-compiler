@@ -12,17 +12,17 @@ export class LoggerService {
           filename: `logs/%DATE%-error.log`,
           level: 'error',
           format: format.combine(format.timestamp(), format.json(), format.printf((info) => {
-            return `{${info.timestamp}, ${JSON.stringify(info)}}`;
+            return `${JSON.stringify(info)}`
           })),
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true, 
-          maxFiles: '20d', // will keep log until they are older than 10 days
+          maxFiles: '20d', // will keep log until they are older than 20 days
         }),
 
         new transports.DailyRotateFile({
           filename: `logs/%DATE%-combined.log`,
           format: format.combine(format.timestamp(), format.json(), format.printf((info) => {
-            return `{${info.timestamp}, ${JSON.stringify(info)}}`;
+            return `${JSON.stringify(info)}`
           })),
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
@@ -30,20 +30,8 @@ export class LoggerService {
         }),
 
         new transports.Console({
-          format: format.combine(
-            format.timestamp({
-              format: () => {
-                return new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-              },
-            }),
-            format.printf((info) => {
-              return `${info.timestamp}, ${info.level}, ${info.message}, ${info.context}`;
-              // return `${JSON.stringify(info)}`
-            }),
-            // Optional for Good Looking
-            nestWinstonModuleUtilities.format.nestLike(appName, {
-              colors: true,
-              // prettyPrint: true
+          format: format.combine(format.timestamp(), format.json(), format.printf((info) => {
+              return `${JSON.stringify(info)}\n`
             }),
           ),
         }),

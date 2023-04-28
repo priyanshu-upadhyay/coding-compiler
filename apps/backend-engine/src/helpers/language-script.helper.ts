@@ -59,7 +59,7 @@ export class ScriptGenerator {
 
   private getStackMemoryLimit(): string {
     // This is equal to 250 MB (MegaBytes)
-    return this.configService.get<string>('MEMORY_LIMIT') || "256000";
+    return this.configService.get<string>('STACK_MEMORY_LIMIT') || "256000";
   }
 
   private getOutputFileSizeLimit(): string {
@@ -86,13 +86,13 @@ export class ScriptGenerator {
     }
   }
   
-  public getEndpointFileContent(): string {
+  public getEndpointFileContent(inputArraySize : number): string {
     let content: string = "#!/usr/bin/env bash\n";
     if (this.isCompilationSupportedLanguage()) {
       content += `${this.getCompilationCommand()} 2> result/compilation_error.out\n` +
         `ret=$?\nif [ $ret -ne 0 ]\nthen\n  exit 2\nfi\n\n`;
     }
-    content += `n=$1     # Number of test cases\n` +
+    content += `n=${inputArraySize}     # Number of test cases\n` +
       `for i in $(seq 1 $n)\n` +
       `do\n` +
       `    # Set resource limits for the program\n` +

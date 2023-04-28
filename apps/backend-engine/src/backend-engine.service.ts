@@ -14,13 +14,14 @@ export class BackendEngineService {
     private readonly dirService: DirectoryManager,
     private readonly dockerService: DockerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
-  ) { }
+  ) {}
 
   async executeSubmission(submissionId: string) {
     let execute: ExecutionSubmissions = await this.db.executionSubmissions.findUniqueOrThrow
     (
       { where: { submission_id: submissionId } }
     );
+    const inputArraySize = execute.input_array.length;
     const languageScript = new ScriptGenerator(execute.programming_language);
     execute = await this.db.executionSubmissions.update
               (
@@ -32,18 +33,17 @@ export class BackendEngineService {
     const { basePath, submissionPath, resultPath } = this.dirService.getAndCreateFoldersForExecution();
     this.dirService.writeTestCases(decodeBase64ArrayOfStrings(execute.input_array));
     this.dirService.writeFileWithName(decodeBase64String(execute.source_code), `main${languageScript.getFileExtension()}`);
-    this.dirService.writeFileWithName(languageScript.getEndpointFileContent(), "inside.sh");
     const workingDir: string = "/compiler";
     const containerName: string = `compiler-${uuidv4()}`;
     const containerId = await this.dockerService.createContainer(languageScript.getDockerImageName(), containerName, workingDir);
     this.logger.info("CONTAINER CREATED", { containerName: containerName, containerId: containerId, submissionId: execute.submission_id });
     await this.dockerService.copyToContainer(containerId, submissionPath, "/");
     await this.dockerService.startContainer(containerId);
-    const inputCount = execute.input_array.length;
-    const insideBashOutput = await this.dockerService.execInContainer(containerId, ['/bin/sh', '-c', `bash inside.sh ${inputCount}`]);
+    const insideBashOutput = await this.dockerService.execInContainer(containerId, ['bash', '-c', languageScript.getEndpointFileContent(inputArraySize)]);
     await this.dockerService.copyFromContainer(containerId, `${workingDir}/result`, submissionPath);
     this.logger.info("INSIDE BASH FILE OUTPUT", insideBashOutput);
-    if (insideBashOutput.exitCode == 2) {
+    if (insideBashOutput.exitCode == 2) 
+    {
       const compilationError: string = await handleCompilationErrorResponse(resultPath);
       execute = await this.db.executionSubmissions.update
                 (
@@ -52,7 +52,8 @@ export class BackendEngineService {
                   }
                 );
     }
-    else if (insideBashOutput.exitCode == 0) {
+    else if (insideBashOutput.exitCode == 0) 
+    {
       const { executionStatus, executionTime, executionOutput } = await handleSuccessExecutionResponse(resultPath);
       execute = await this.db.executionSubmissions.update
                 (
@@ -61,20 +62,21 @@ export class BackendEngineService {
                   }
                 );
     }
-    else {
+    else 
+    {
       execute = await this.db.executionSubmissions.update
-                (
-                  { where  : { submission_id : submissionId }
-                  , data   : { submission_status : SubmissionStatus.FAILURE}
-                  }
-                );
+                      (
+                        { where  : { submission_id : submissionId }
+                        , data   : { submission_status : SubmissionStatus.FAILURE}
+                        }
+                      );
     }
     await this.cacheManager.set(execute.submission_id, execute);
     try {
       await this.dockerService.removeContainer(containerId);
       this.dirService.deleteFolder(basePath);
     } catch (error) {
-      this.logger.error(`Fail to clean the data for ${execute.submission_id}`, error);
+      this.logger.error(`Failed to delete the data for ${execute.submission_id}`, error);
     }
     this.logger.info(`TASK COMPLETED FOR ${execute.submission_id}`);
   }
