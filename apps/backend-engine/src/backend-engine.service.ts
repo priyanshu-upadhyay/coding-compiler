@@ -34,7 +34,7 @@ export class BackendEngineService {
     this.dirService.writeTestCases(decodeBase64ArrayOfStrings(execute.input_array));
     this.dirService.writeFileWithName(decodeBase64String(execute.source_code), `main${languageScript.getFileExtension()}`);
     const workingDir: string = "/compiler";
-    const containerName: string = `compiler-${uuidv4()}`;
+    const containerName: string = `GLACompiler-${uuidv4()}`;
     const containerId = await this.dockerService.createContainer(languageScript.getDockerImageName(), containerName, workingDir);
     this.logger.info("CONTAINER CREATED", { containerName: containerName, containerId: containerId, submissionId: execute.submission_id });
     await this.dockerService.copyToContainer(containerId, submissionPath, "/");
@@ -67,7 +67,7 @@ export class BackendEngineService {
       execute = await this.db.executionSubmissions.update
                       (
                         { where  : { submission_id : submissionId }
-                        , data   : { submission_status : SubmissionStatus.FAILURE}
+                        , data   : { submission_status : SubmissionStatus.FAILURE, metadata : JSON.stringify(insideBashOutput)}
                         }
                       );
     }

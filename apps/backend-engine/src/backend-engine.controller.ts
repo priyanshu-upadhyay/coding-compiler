@@ -25,7 +25,7 @@ export class BackendEngineController {
       const execute : ExecutionSubmissions = await this.db.executionSubmissions.update
       (
         { where  : { submission_id : submissionId }
-        , data   : { submission_status : SubmissionStatus.FAILURE}
+        , data   : { submission_status : SubmissionStatus.FAILURE, metadata : JSON.stringify(error)}
         }
       );
       await this.cacheManager.set(execute.submission_id, execute);
