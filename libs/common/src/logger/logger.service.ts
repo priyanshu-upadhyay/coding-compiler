@@ -5,7 +5,7 @@ import 'winston-daily-rotate-file';
 
 @Injectable()
 export class LoggerService {
-  createLogger(appName) {
+  createLogger(_appName) {
     return WinstonModule.createLogger({
       transports: [
         new transports.DailyRotateFile({
@@ -26,7 +26,7 @@ export class LoggerService {
           })),
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
-          maxFiles: '20d'
+          maxFiles: '90d'
         }),
 
         new transports.Console({

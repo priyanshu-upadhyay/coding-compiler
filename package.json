@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:all": "nest build api-gateway && nest build backend-engine && nest build cron-scheduler",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "echo Waiting for DB, Redis, and RabbitMQ... && wait-on tcp:localhost:5672 tcp:localhost:6379 tcp:localhost:5672 && nest start --watch",
@@ -38,6 +39,7 @@
     "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "compression": "^1.7.4",
     "dockerode": "^3.3.5",
     "joi": "^17.9.1",
     "nest-winston": "^1.9.1",

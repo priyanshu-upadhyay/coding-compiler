@@ -1,3 +1,4 @@
+# Don't use this for PRODUCTION SERVER
 version: '3.8'
 services:
   database:

@@ -8,7 +8,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Controller()
 export class BackendEngineController {
-  private readonly logger = new AppLogger(BackendEngineController.name);
+  private logger;
   constructor(private readonly backendEngineService: BackendEngineService,
     private readonly db: DatabaseService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -17,11 +17,12 @@ export class BackendEngineController {
   @EventPattern(EMIT_SUBMISSION)
   async handleSubmissionCreated(@Payload() submissionId : string, @Ctx() context: RmqContext) 
   {
+    this.logger = new AppLogger(submissionId);
     try {
       await this.backendEngineService.executeSubmission(submissionId);
     } 
     catch (error) {
-      this.logger.error("Submission Processing Error", error);
+      this.logger.error("PROCESSING", error);
       const execute : ExecutionSubmissions = await this.db.executionSubmissions.update
       (
         { where  : { submission_id : submissionId }

@@ -38,7 +38,7 @@ enum ExecutionStatus {
 }
 
 model ExecutionSubmissions {
-  submission_id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  submission_id          String   @id @db.Uuid
   programming_language   ProgrammingLanguages
   submission_status      SubmissionStatus  @default(CREATED)
   source_code            String

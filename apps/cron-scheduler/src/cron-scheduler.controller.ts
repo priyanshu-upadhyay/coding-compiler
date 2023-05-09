@@ -7,8 +7,8 @@ export class CronSchedulerController {
   private readonly logger = new AppLogger(CronSchedulerController.name);
   constructor() {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_12_HOURS)
   async func() {
-    this.logger.info("Priyanshu");
+    this.logger.info("Compiler Services is Up - Priyanshu Upadhyay");
   }
 }
