@@ -244,7 +244,7 @@ let RmqService = RmqService_1 = class RmqService {
         this.configService = configService;
         this.logger = new common_2.AppLogger(RmqService_1.name);
         const totalRam = os.totalmem() / (1024 * 1024);
-        const containerSize = 200;
+        const containerSize = 90;
         this.prefetchCount = this.calculatePrefetchCount(totalRam, containerSize);
     }
     getOptions(queue, noAck = false) {

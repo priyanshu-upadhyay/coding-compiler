@@ -12,7 +12,7 @@ export class RmqService {
   
   constructor(private readonly configService: ConfigService) {
     const totalRam = os.totalmem() / (1024 * 1024); // Convert total RAM to MB
-    const containerSize = 200; // Specify the container size in MB
+    const containerSize = 90; // Specify the container size in MB
     this.prefetchCount = this.calculatePrefetchCount(totalRam, containerSize);
   }
 
