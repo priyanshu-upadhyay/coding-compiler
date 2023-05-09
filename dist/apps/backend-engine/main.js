@@ -108,7 +108,7 @@ let BackendEngineController = class BackendEngineController {
             await this.backendEngineService.executeSubmission(submissionId);
         }
         catch (error) {
-            this.logger.error("PROCESSING", error);
+            this.logger.error("PROCESSING FAILED", error);
             const execute = await this.db.executionSubmissions.update({ where: { submission_id: submissionId },
                 data: { submission_status: client_1.SubmissionStatus.FAILURE, metadata: JSON.stringify(error) }
             });

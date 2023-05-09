@@ -22,7 +22,7 @@ export class BackendEngineController {
       await this.backendEngineService.executeSubmission(submissionId);
     } 
     catch (error) {
-      this.logger.error("PROCESSING", error);
+      this.logger.error("PROCESSING FAILED", error);
       const execute : ExecutionSubmissions = await this.db.executionSubmissions.update
       (
         { where  : { submission_id : submissionId }
